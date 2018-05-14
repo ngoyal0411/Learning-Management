@@ -208,7 +208,7 @@ route.get('/:id/batches/:bid/teachers', (req, res) => {
 })
 
 
-
+//post
 route.post('/', function (req, res) {
     Course.create({
         courseName: req.body.name
