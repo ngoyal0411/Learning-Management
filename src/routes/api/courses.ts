@@ -175,6 +175,7 @@ route.get('/:id/batches/:bid/students', (req, res) => {
         })
 })
 
+//get
 route.get('/:id/batches/:bid/teachers', (req, res) => {
     Batch.findOne({
         where: {

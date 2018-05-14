@@ -73,8 +73,8 @@ route.post('/', function (req, res) {
     })
 })
 
-// put one /teacher/:id
 
+// put one /teacher/:id
 route.put('/:id', (req, res) => {
     let teacherid = parseInt(req.params.id)
     Teacher.update({ teachername: req.body.name },
