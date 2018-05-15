@@ -74,12 +74,21 @@
             </div>
         </div>
     </div>
+
+    <div class="row " v-if="students && students.length ">
+            <div class="col-md-4 card mx-auto p-2 " v-for="student in students ">
+                <h4 class="product-title ">{{student.studentName}}</h4>
+                <div class="product-ventor "><a class="btn btn-primary" @click="viewStudentDetail(student.id)">View Student Detail</a></div>
+            </div>
+        </div>
+    </div>
     <script src="https://unpkg.com/axios/dist/axios.min.js "></script>
     <script>
         let app = new Vue({
             el: '#app',
             data: {
                 students: [],
+                active:false,
                 errors: []
             },
             created() {
