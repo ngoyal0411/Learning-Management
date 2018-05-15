@@ -9,7 +9,9 @@ const route = express_1.default.Router();
 const sequelize_1 = __importDefault(require("sequelize"));
 // get all /teachers
 route.get('/', (req, res) => {
-    db_1.Teacher.findAll({})
+    db_1.Teacher.findAll({
+        include: [{ model: db_1.Subject }]
+    })
         .then((teachers) => {
         res.status(200).send(teachers);
     })
@@ -23,6 +25,7 @@ route.get('/', (req, res) => {
 route.get('/:id', (req, res) => {
     let teacherid = parseInt(req.params.id);
     db_1.Teacher.findOne({
+        include: [{ model: db_1.Subject }],
         where: {
             id: teacherid
         }
@@ -54,15 +57,25 @@ route.get('/:id/batches', (req, res) => {
 });
 //post one /teacher
 route.post('/', function (req, res) {
-    db_1.Teacher.create({
-        teacherName: req.body.name,
-        SubjectId: req.body.subjectid
-    }).then((teacher) => {
-        res.status(201).send(teacher);
-    }).catch((err) => {
-        console.log(err);
-        res.status(501).send({
-            error: "Could not add new Teacher"
+    db_1.Subject.findOne({
+        where: {
+            subject: req.body.subjectname
+        }
+    }).then((subject) => {
+        db_1.Teacher.create({
+            teacherName: req.body.teachername,
+            SubjectId: subject.id
+        }).then((teacher) => {
+            res.status(201).redirect('/');
+        }).catch((err) => {
+            console.log(err);
+            res.status(501).send({
+                error: "Could not add new Teacher"
+            });
+        }).catch((err) => {
+            res.status(501).send({
+                error: "Could not find teacher"
+            });
         });
     });
 });

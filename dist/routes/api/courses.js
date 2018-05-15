@@ -36,6 +36,7 @@ route.get('/:id', (req, res) => {
 route.get('/:id/batches', (req, res) => {
     let courseId = parseInt(req.params.id);
     db_1.Batch.findAll({
+        include: [{ model: db_1.Course }],
         where: {
             CourseId: courseId
         }
@@ -160,6 +161,7 @@ route.get('/:id/batches/:bid/students', (req, res) => {
         });
     });
 });
+//get
 route.get('/:id/batches/:bid/teachers', (req, res) => {
     db_1.Batch.findOne({
         where: {
@@ -190,11 +192,12 @@ route.get('/:id/batches/:bid/teachers', (req, res) => {
         });
     });
 });
+//post
 route.post('/', function (req, res) {
     db_1.Course.create({
-        courseName: req.body.name
+        courseName: req.body.coursename
     }).then((course) => {
-        res.status(201).send(course);
+        res.status(201).redirect('/');
     }).catch((err) => {
         res.status(501).send({
             error: "Could not add new course"

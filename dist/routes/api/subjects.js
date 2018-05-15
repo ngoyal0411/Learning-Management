@@ -8,7 +8,11 @@ const express_1 = __importDefault(require("express"));
 const route = express_1.default.Router();
 //get all subjects
 route.get('/', (req, res) => {
-    db_1.Subject.findAll()
+    db_1.Subject.findAll({
+        include: [
+            { model: db_1.Course }
+        ]
+    })
         .then((subjects) => {
         res.status(200).send(subjects);
     })
@@ -57,14 +61,24 @@ route.get('/:id/teachers', (req, res) => {
 });
 //add new subject
 route.post('/', function (req, res) {
-    db_1.Subject.create({
-        subject: req.body.subject,
-        CourseId: req.body.courseid
-    }).then((subject) => {
-        res.status(201).send(subject);
+    db_1.Course.findOne({
+        where: {
+            courseName: req.body.coursename
+        }
+    }).then((course) => {
+        db_1.Subject.create({
+            subject: req.body.subjectname,
+            CourseId: course.id
+        }).then((subject) => {
+            res.status(201).send(subject);
+        }).catch((err) => {
+            res.status(501).send({
+                error: "Could not add new subject"
+            });
+        });
     }).catch((err) => {
         res.status(501).send({
-            error: "Could not add new subject"
+            error: "Could not retrieve Course"
         });
     });
 });

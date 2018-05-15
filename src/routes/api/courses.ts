@@ -3,6 +3,7 @@ import express from 'express'
 const route = express.Router()
 import path from 'path'
 import Sequelize from 'sequelize'
+import url from 'url'
 const Op = Sequelize.Op
 
 
@@ -37,6 +38,7 @@ route.get('/:id', (req, res) => {
 route.get('/:id/batches', (req, res) => {
     let courseId = parseInt(req.params.id)
     Batch.findAll({
+        include:[{model:Course}],
         where: {
             CourseId: courseId
         }
@@ -51,6 +53,7 @@ route.get('/:id/batches', (req, res) => {
         })
 
 })
+
 
 route.get('/:id/batches/:bid', (req, res) => {
     Batch.findOne({
@@ -163,10 +166,10 @@ route.get('/:id/batches/:bid/students', (req, res) => {
         }).then((students) => {
             res.status(200).send(students)
         }).catch((err) => {
-                res.status(500).send({
-                    error: "Could not retrieve students enrolled in this particular batch"
-                })
+            res.status(500).send({
+                error: "Could not retrieve students enrolled in this particular batch"
             })
+        })
     })
         .catch((err) => {
             res.status(500).send({
@@ -212,9 +215,9 @@ route.get('/:id/batches/:bid/teachers', (req, res) => {
 //post
 route.post('/', function (req, res) {
     Course.create({
-        courseName: req.body.name
+        courseName: req.body.coursename
     }).then((course) => {
-        res.status(201).send(course)
+        res.status(201).redirect('/')
     }).catch((err) => {
         res.status(501).send({
             error: "Could not add new course"

@@ -1,11 +1,16 @@
-import { Subject, Teacher } from '../../db'
+import { Subject, Teacher, Course } from '../../db'
 import express from 'express'
 const route = express.Router()
 import path from 'path'
 
 //get all subjects
 route.get('/', (req, res) => {
-    Subject.findAll()
+    Subject.findAll({
+        include:[
+            { model:Course}
+        ]
+        
+    })
         .then((subjects) => {
             res.status(200).send(subjects)
         })
@@ -58,16 +63,27 @@ route.get('/:id/teachers', (req, res) => {
 
 //add new subject
 route.post('/', function (req, res) {
-    Subject.create({
-        subject: req.body.subject,
-        CourseId:req.body.courseid
-    }).then((subject) => {
-        res.status(201).send(subject)
-    }).catch((err) => {
+    Course.findOne({
+        where: {
+            courseName: req.body.coursename
+        }
+    }).then((course: any) => {
+        Subject.create({
+            subject: req.body.subjectname,
+            CourseId: course.id
+        }).then((subject) => {
+            res.status(201).send(subject)
+        }).catch((err) => {
+            res.status(501).send({
+                error: "Could not add new subject"
+            })
+        })
+    }).catch((err)=>{
         res.status(501).send({
-            error: "Could not add new subject"
+            error: "Could not retrieve Course"
         })
     })
+
 })
 
 //update detail of subject with id passed in url

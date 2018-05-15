@@ -1,4 +1,4 @@
-import { Teacher, Batch, Lecture } from '../../db'
+import { Teacher, Batch, Lecture, Subject } from '../../db'
 import express from 'express'
 const route = express.Router()
 import path from 'path'
@@ -7,7 +7,9 @@ import Sequelize from 'sequelize'
 // get all /teachers
 
 route.get('/', (req, res) => {
-    Teacher.findAll({})
+    Teacher.findAll({
+        include:[{model:Subject}]
+    })
         .then((teachers) => {
             res.status(200).send(teachers)
         })
@@ -23,6 +25,7 @@ route.get('/', (req, res) => {
 route.get('/:id', (req, res) => {
     let teacherid = parseInt(req.params.id)
     Teacher.findOne({
+        include: [{ model: Subject }],
         where: {
             id: teacherid
         }
@@ -41,10 +44,10 @@ route.get('/:id/batches', (req, res) => {
     let teacherid = parseInt(req.params.id)
     Lecture.findAll({
         attributes: [
-            
-            [Sequelize.fn('DISTINCT', Sequelize.col('BatchId')) ,'BatchId'],
+
+            [Sequelize.fn('DISTINCT', Sequelize.col('BatchId')), 'BatchId'],
         ],
-    
+
         where: {
             id: teacherid
         }
@@ -60,15 +63,25 @@ route.get('/:id/batches', (req, res) => {
 //post one /teacher
 
 route.post('/', function (req, res) {
-    Teacher.create({
-        teacherName: req.body.name,
-        SubjectId: req.body.subjectid
-    }).then((teacher) => {
-        res.status(201).send(teacher);
-    }).catch((err) => {
-        console.log(err)
-        res.status(501).send({
-            error: "Could not add new Teacher"
+    Subject.findOne({
+        where: {
+            subject: req.body.subjectname
+        }
+    }).then((subject: any) => {
+        Teacher.create({
+            teacherName: req.body.teachername,
+            SubjectId: subject.id
+        }).then((teacher) => {
+            res.status(201).redirect('/');
+        }).catch((err) => {
+            console.log(err)
+            res.status(501).send({
+                error: "Could not add new Teacher"
+            })
+        }).catch((err) => {
+            res.status(501).send({
+                error: "Could not find teacher"
+            })
         })
     })
 })

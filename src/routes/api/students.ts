@@ -1,10 +1,21 @@
-import { Student, Batch, BatchStudentMapping } from '../../db'
+import { Student, Batch, BatchStudentMapping, Course } from '../../db'
 import express from 'express'
 const route = express.Router()
 import path from 'path'
 
 //get all students
 route.get('/', (req, res) => {
+    // BatchStudentMapping.findAll({
+    //     include: [
+    //         {
+    //             model: Batch,
+    //             include: [Course]
+    //         },
+    //         {
+    //             model: Student
+    //         }
+    //     ]
+    // })
     Student.findAll()
         .then((students) => {
             res.status(200).send(students)
@@ -59,7 +70,7 @@ route.get('/:id/batches', (req, res) => {
 //add new student
 route.post('/', function (req, res) {
     Student.create({
-        studentName: req.body.name,
+        studentName: req.body.studentname,
     }).then((student) => {
         res.status(201).send(student)
     }).catch((err) => {

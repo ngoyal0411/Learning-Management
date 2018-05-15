@@ -18,25 +18,13 @@ route.post('/', function (req, res) {
         });
     });
 });
-route.post('/addBatch', function (req, res) {
-    db_1.Batch.create({
-        batch: req.body.batch,
-        CourseId: req.body.courseid
-    }).then((batchStudent) => {
-        res.status(201).send(batchStudent);
-    }).catch((err) => {
-        res.status(501).send({
-            error: "Could not enroll student in batch"
-        });
-    });
-});
 route.post('/addLecture', function (req, res) {
     db_1.Lecture.create({
         lecture: req.body.lecture,
         BatchId: req.body.batchid,
         TeacherId: req.body.teacherid
     }).then((lecture) => {
-        res.status(201).send(lecture);
+        res.status(201).redirect('/');
     }).catch((err) => {
         res.status(501).send({
             error: "Could not add lecture"

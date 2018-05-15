@@ -8,6 +8,17 @@ const express_1 = __importDefault(require("express"));
 const route = express_1.default.Router();
 //get all students
 route.get('/', (req, res) => {
+    // BatchStudentMapping.findAll({
+    //     include: [
+    //         {
+    //             model: Batch,
+    //             include: [Course]
+    //         },
+    //         {
+    //             model: Student
+    //         }
+    //     ]
+    // })
     db_1.Student.findAll()
         .then((students) => {
         res.status(200).send(students);
@@ -58,7 +69,7 @@ route.get('/:id/batches', (req, res) => {
 //add new student
 route.post('/', function (req, res) {
     db_1.Student.create({
-        studentName: req.body.name,
+        studentName: req.body.studentname,
     }).then((student) => {
         res.status(201).send(student);
     }).catch((err) => {
