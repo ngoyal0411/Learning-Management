@@ -75,40 +75,36 @@ route.get('/:id/batches/:bid', (req, res) => {
 
 })
 
-route.get('/:id/batches/:bid/lectures', (req, res) => {
-
+route.get('/:id/batches/:bid/lectures',(req,res)=>{
     Batch.findOne({
-        where: {
-            [Op.and]: [
-                { id: parseInt(req.params.bid) },
-                { CourseId: parseInt(req.params.id) }
+        where:{
+            [Op.and]:
+            [
+                {id: req.params.bid},
+                {CourseId: req.params.id}
             ]
         }
-    })
-        .then((batch: any) => {
-            Lecture.findAll({
-                where: {
-                    BatchId: batch.id
-                }
-            })
-                .then((lectures) => {
-                    res.status(200).send(lectures)
-                })
-                .catch((err) => {
-                    res.status(500).send({
-                        error: "Could not retrieve lectures related to batch with particular id"
-                    })
-                })
-
+    }).then((batch:any) => {
+        Lecture.findAll({
+            include:[{model:Batch}],
+            where:{
+                BatchId:batch.id
+            }
+        }).then((lectures) => {
+            res.status(200).send(lectures)
         })
         .catch((err) => {
             res.status(500).send({
-                error: "Could not retrieve batch"
+                error: "Could not retrieve lectures"
             })
         })
-
+    })
+    .catch((err) => {
+        res.status(500).send({
+            error: "Could not retrieve batches related to course"
+        })
+    }) 
 })
-
 route.get('/:id/batches/:bid/lectures/:lid', (req, res) => {
 
     Batch.findOne({

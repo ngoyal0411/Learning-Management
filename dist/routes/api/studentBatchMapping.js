@@ -6,29 +6,64 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const db_1 = require("../../db");
 const express_1 = __importDefault(require("express"));
 const route = express_1.default.Router();
+const sequelize_1 = __importDefault(require("sequelize"));
+const Op = sequelize_1.default.Op;
 route.post('/', function (req, res) {
-    db_1.BatchStudentMapping.create({
-        BatchId: req.body.batchid,
-        StudentId: req.body.studentid
-    }).then((batchStudent) => {
-        res.status(201).send(batchStudent);
-    }).catch((err) => {
-        res.status(501).send({
-            error: "Could not enroll student in batch"
+    db_1.Batch.findOne({
+        where: {
+            batch: req.body.batchname
+        }
+    }).then((batch) => {
+        db_1.BatchStudentMapping.findAll({
+            where: {
+                [Op.and]: [
+                    { StudentId: parseInt(req.body.id) },
+                    { BatchId: batch.id }
+                ]
+            }
+        }).then((mapping) => {
+            if (mapping.length == 0) {
+                db_1.BatchStudentMapping.create({
+                    StudentId: parseInt(req.body.id),
+                    BatchId: batch.id
+                }).then((studentbatchmapping) => {
+                    res.status(201).redirect('/');
+                }).catch((err) => {
+                    res.status(501).send({
+                        error: "Could not Enroll student to batch"
+                    });
+                });
+            }
+            else {
+                res.status(201).redirect('/');
+            }
         });
     });
 });
-route.post('/addLecture', function (req, res) {
-    db_1.Lecture.create({
-        lecture: req.body.lecture,
-        BatchId: req.body.batchid,
-        TeacherId: req.body.teacherid
-    }).then((lecture) => {
-        res.status(201).redirect('/');
-    }).catch((err) => {
-        res.status(501).send({
-            error: "Could not add lecture"
-        });
+route.post('/map', function (req, res) {
+    db_1.BatchStudentMapping.findAll({
+        where: {
+            [Op.and]: [
+                { StudentId: req.body.studentId },
+                { BatchId: req.body.batchId }
+            ]
+        }
+    }).then((mapping) => {
+        if (mapping.length == 0) {
+            db_1.BatchStudentMapping.create({
+                StudentId: req.body.studentId,
+                BatchId: req.body.batchId
+            }).then((studentbatchmapping) => {
+                res.status(201).send();
+            }).catch((err) => {
+                res.status(501).send({
+                    error: "Could not Enroll student to batch"
+                });
+            });
+        }
+        else {
+            res.status(202).send();
+        }
     });
 });
 route.get('/', (req, res) => {

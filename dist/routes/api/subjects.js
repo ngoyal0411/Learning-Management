@@ -70,7 +70,7 @@ route.post('/', function (req, res) {
             subject: req.body.subjectname,
             CourseId: course.id
         }).then((subject) => {
-            res.status(201).send(subject);
+            res.status(201).redirect('/');
         }).catch((err) => {
             res.status(501).send({
                 error: "Could not add new subject"

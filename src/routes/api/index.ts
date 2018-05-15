@@ -4,6 +4,7 @@ import express from 'express'
  import subjects from './subjects'
  import teachers from './teachers'
  import batches from './batches'
+ import lectures from './lectures'
  import studentsBatchesMapping from './studentBatchMapping'
 const route=express.Router()
 
@@ -12,6 +13,7 @@ const route=express.Router()
  route.use('/subjects',subjects)
  route.use('/teachers',teachers)
  route.use('/batches',batches)
- route.use('/studentsBatchesMapping',studentsBatchesMapping)
+ route.use('/lectures',lectures)
+ route.use('/enrollStudentBatch',studentsBatchesMapping)
 
 export default route

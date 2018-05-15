@@ -5,17 +5,6 @@ import path from 'path'
 
 //get all students
 route.get('/', (req, res) => {
-    // BatchStudentMapping.findAll({
-    //     include: [
-    //         {
-    //             model: Batch,
-    //             include: [Course]
-    //         },
-    //         {
-    //             model: Student
-    //         }
-    //     ]
-    // })
     Student.findAll()
         .then((students) => {
             res.status(200).send(students)
@@ -36,7 +25,9 @@ route.get('/:id', (req, res) => {
         }
     })
         .then((student) => {
+            //console.log(student)
             res.status(200).send(student)
+
         })
         .catch((err) => {
             res.status(500).send({
@@ -79,6 +70,20 @@ route.post('/', function (req, res) {
         })
     })
 })
+
+route.post('/enroll/:sid/:bid', function (req:any, res) {
+    BatchStudentMapping.create({
+        BatchId: parseInt(req.param.bid),
+        StudentId:parseInt(req.param.sid)
+    }).then((batchStudent) => {
+        res.status(201).redirect('/')
+    }).catch((err) => {
+        res.status(501).send({
+            error: "Could not enroll student in batch"
+        })
+    })
+})
+
 
 //update detail of student with id passed in url
 route.put('/:id', function (req, res) {

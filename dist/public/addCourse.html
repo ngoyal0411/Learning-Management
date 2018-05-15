@@ -80,30 +80,4 @@
     </div>
 </body>
 
-<!-- <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-<script>
-    let app = new Vue({
-        el: '#app',
-        data: {
-            vendors: [],
-            userid: '',
-            username: ''
-        },
-        created() {
-            axios.get('/profile').then((res) => {
-                if (res.data) {
-                    this.userid = parseInt(res.data.id)
-                    this.username = res.data.name
-                    axios.get('http://localhost:4444/api/vendors')
-                        .then(response => {
-                            this.vendors = response.data
-                        }).catch(function (error) {
-                            console.log(error)
-                        })
-                }
-            })
-        },
-    })
-</script> -->
-
 </html>

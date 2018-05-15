@@ -8,17 +8,6 @@ const express_1 = __importDefault(require("express"));
 const route = express_1.default.Router();
 //get all students
 route.get('/', (req, res) => {
-    // BatchStudentMapping.findAll({
-    //     include: [
-    //         {
-    //             model: Batch,
-    //             include: [Course]
-    //         },
-    //         {
-    //             model: Student
-    //         }
-    //     ]
-    // })
     db_1.Student.findAll()
         .then((students) => {
         res.status(200).send(students);
@@ -38,6 +27,7 @@ route.get('/:id', (req, res) => {
         }
     })
         .then((student) => {
+        //console.log(student)
         res.status(200).send(student);
     })
         .catch((err) => {
@@ -75,6 +65,18 @@ route.post('/', function (req, res) {
     }).catch((err) => {
         res.status(501).send({
             error: "Could not add new student"
+        });
+    });
+});
+route.post('/enroll/:sid/:bid', function (req, res) {
+    db_1.BatchStudentMapping.create({
+        BatchId: parseInt(req.param.bid),
+        StudentId: parseInt(req.param.sid)
+    }).then((batchStudent) => {
+        res.status(201).redirect('/');
+    }).catch((err) => {
+        res.status(501).send({
+            error: "Could not enroll student in batch"
         });
     });
 });
