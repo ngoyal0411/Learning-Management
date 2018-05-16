@@ -1,13 +1,25 @@
 import Sequelize from 'sequelize'
 
-const db = new Sequelize('learningManagementDB', 'nishugoel', 'password', {
-    dialect: 'mysql',
+// const db = new Sequelize('learningManagementDB', 'nishugoel', 'password', {
+//     dialect: 'mysql',
+//     host: 'localhost',
+//     pool:{
+//         min:0,
+//         max:5,
+//     }
+// })
+
+const db = new Sequelize( {
+    dialect: 'sqlite',
     host: 'localhost',
+    storage:'learningManagementDB.db',
     pool:{
         min:0,
         max:5,
     }
 })
+
+
 
 export const Course = db.define('Course', {
     courseName: {

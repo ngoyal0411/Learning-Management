@@ -92,7 +92,7 @@ route.put('/:id', function (req, res) {
         {
             where: {
 
-                id: parseInt(req.params.id)
+                id: req.params.id
             }
         })
         .then((subject) => {

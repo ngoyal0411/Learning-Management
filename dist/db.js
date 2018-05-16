@@ -4,9 +4,18 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const sequelize_1 = __importDefault(require("sequelize"));
-const db = new sequelize_1.default('learningManagementDB', 'nishugoel', 'password', {
-    dialect: 'mysql',
+// const db = new Sequelize('learningManagementDB', 'nishugoel', 'password', {
+//     dialect: 'mysql',
+//     host: 'localhost',
+//     pool:{
+//         min:0,
+//         max:5,
+//     }
+// })
+const db = new sequelize_1.default({
+    dialect: 'sqlite',
     host: 'localhost',
+    storage: 'learningManagementDB.db',
     pool: {
         min: 0,
         max: 5,

@@ -25,7 +25,6 @@ route.get('/:id', (req, res) => {
         }
     })
         .then((student) => {
-            //console.log(student)
             res.status(200).send(student)
 
         })
@@ -63,7 +62,7 @@ route.post('/', function (req, res) {
     Student.create({
         studentName: req.body.studentname,
     }).then((student) => {
-        res.status(201).send(student)
+        res.status(201).redirect('/')
     }).catch((err) => {
         res.status(501).send({
             error: "Could not add new student"

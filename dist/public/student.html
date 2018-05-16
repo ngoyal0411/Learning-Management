@@ -112,15 +112,16 @@
             <div class="row">
                 <label class="col-sm-2 col-form-label">Select Batch</label>
                 <div class=" col-sm-10">
-                    <select v-if="batches && batches.length" class="selectpicker" name="batchname">
-                        <option v-for="batch in batches">{{batch.batch}}</option>
+                    <select v-if="batches && batches.length" class="selectpicker" name="batchname" v-model="batchId">
+                        <option disabled value="" >Select Batch</option>
+                        <option v-for="batch in batches" v-bind:value="batch.id">{{batch.batch}}</option>
                     </select>
                 </div>
             </div>
 
             <div class="row">
                 <div class="col-sm-10">
-                    <button class="btn btn-primary" @click="enrollToBatch(batch.id,studentId)">Enroll</button>
+                    <button class="btn btn-primary" @click="enrollToBatch(batchId,studentId)">Enroll</button>
                 </div>
             </div>
         </div>
@@ -137,6 +138,7 @@
                 detailActive: false,
                 enrollActive: false,
                 studentId: '',
+                batchId:'',
                 errors: []
             },
             created() {
@@ -176,11 +178,9 @@
                 },
                 enrollToBatch(batchId, studentId) {
                     if (batchId, studentId) {
-
                         axios.post(`http://localhost:4444/api/enrollStudentBatch`, { batchId, studentId })
                         .then(response => {
                             if (response.status == 201) {
-                                console.log("here")
                                 window.alert("Student Enrolled!")
                             }
                             if (response.status == 202) {
@@ -190,9 +190,6 @@
                         }).catch(e => {
                             this.errors.push(e)
                         })
-                    }
-                    else {
-                        res.status(202).send()
                     }
                 }
             }

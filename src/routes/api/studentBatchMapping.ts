@@ -8,23 +8,23 @@ const Op=Sequelise.Op
 route.post('/', function (req, res) {
     Batch.findOne({
         where:{
-            batch:req.body.batchname
+            id:parseInt(req.body.batchId)
         }
     }).then((batch:any)=>{
         BatchStudentMapping.findAll({
             where:{
                 [Op.and]:[
-                    {StudentId: parseInt(req.body.id)},
+                    {StudentId: parseInt(req.body.studentId)},
                     {BatchId:batch.id}
                 ]
             }
         }).then((mapping)=>{
             if(mapping.length==0){
                 BatchStudentMapping.create({
-                    StudentId: parseInt(req.body.id),
+                    StudentId: parseInt(req.body.studentId),
                     BatchId:batch.id
                 }).then((studentbatchmapping) => {
-                    res.status(201).redirect('/')
+                    res.status(201).send()
                 }).catch((err) => {
                     res.status(501).send({
                         error: "Could not Enroll student to batch"
@@ -32,7 +32,7 @@ route.post('/', function (req, res) {
                 })
             }
             else{
-                res.status(201).redirect('/')
+                res.status(202).send()
             }
         })
     })  
@@ -67,8 +67,8 @@ route.post('/map', function (req, res) {
 })
 
 route.get('/',(req,res)=>{
-    Batch.findAll().then((batch) => {
-        res.status(201).send(batch)
+    BatchStudentMapping.findAll().then((batchstudent) => {
+        res.status(201).send(batchstudent)
     }).catch((err) => {
         res.status(501).send({
             error: "Could not retrieve batch"

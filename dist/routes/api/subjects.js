@@ -86,7 +86,7 @@ route.post('/', function (req, res) {
 route.put('/:id', function (req, res) {
     db_1.Subject.update({ subject: req.body.subject }, {
         where: {
-            id: parseInt(req.params.id)
+            id: req.params.id
         }
     })
         .then((subject) => {

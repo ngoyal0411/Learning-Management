@@ -11,23 +11,23 @@ const Op = sequelize_1.default.Op;
 route.post('/', function (req, res) {
     db_1.Batch.findOne({
         where: {
-            batch: req.body.batchname
+            id: parseInt(req.body.batchId)
         }
     }).then((batch) => {
         db_1.BatchStudentMapping.findAll({
             where: {
                 [Op.and]: [
-                    { StudentId: parseInt(req.body.id) },
+                    { StudentId: parseInt(req.body.studentId) },
                     { BatchId: batch.id }
                 ]
             }
         }).then((mapping) => {
             if (mapping.length == 0) {
                 db_1.BatchStudentMapping.create({
-                    StudentId: parseInt(req.body.id),
+                    StudentId: parseInt(req.body.studentId),
                     BatchId: batch.id
                 }).then((studentbatchmapping) => {
-                    res.status(201).redirect('/');
+                    res.status(201).send();
                 }).catch((err) => {
                     res.status(501).send({
                         error: "Could not Enroll student to batch"
@@ -35,7 +35,7 @@ route.post('/', function (req, res) {
                 });
             }
             else {
-                res.status(201).redirect('/');
+                res.status(202).send();
             }
         });
     });
@@ -67,8 +67,8 @@ route.post('/map', function (req, res) {
     });
 });
 route.get('/', (req, res) => {
-    db_1.Batch.findAll().then((batch) => {
-        res.status(201).send(batch);
+    db_1.BatchStudentMapping.findAll().then((batchstudent) => {
+        res.status(201).send(batchstudent);
     }).catch((err) => {
         res.status(501).send({
             error: "Could not retrieve batch"

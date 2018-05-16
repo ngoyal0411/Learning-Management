@@ -24,7 +24,7 @@ route.get('/upcoming', (req, res) => {
         include: [
             { model: db_1.Course }
         ],
-        limit: 5, order: [['updatedAt', 'DESC']]
+        limit: 6, order: [['updatedAt', 'DESC']]
     }).then((batches) => {
         res.status(201).send(batches);
     }).catch((err) => {
