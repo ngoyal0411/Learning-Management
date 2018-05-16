@@ -14,4 +14,4 @@ app.use('/', express.static(path.join(__dirname, 'public')))
 
  app.use('/api',routes.apies)
 
-app.listen(4444, () => console.log('Running at http://localhost:4444'));
+app.listen(process.env.PORT||4444, () => console.log('Running at http://localhost:4444'));
